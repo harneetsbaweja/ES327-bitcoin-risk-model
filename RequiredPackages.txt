@@ -1,0 +1,13 @@
+yfinance
+pandas
+Ta-Lib
+scikit-learn
+numpy
+jupyter
+plotly
+nbformat
+ipywidgets
+dash
+fear-and-greed
+pycoingecko
+matplotlib
