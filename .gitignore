@@ -9,6 +9,10 @@
 /.ipynb_checkpoints/
 /etc/
 
+# Model files
+*.joblib
+models/
+
 # Data cache (regeneratable)
 data_cache/
 *.pkl
