@@ -39,3 +39,6 @@ Thumbs.db
 
 # Label Studio files
 /ES327LabelStudio
+
+# Existing Project Files
+/existing_projects/
