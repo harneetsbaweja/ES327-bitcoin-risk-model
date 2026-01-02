@@ -36,3 +36,6 @@ __pycache__/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Label Studio files
+/ES327LabelStudio
