@@ -13,9 +13,9 @@ def scale_all_features(feature_data):
     Scale ALL features.
     Returns:
         Dictionary with:
-        - 'absolute_values': Original DataFrame (with DateTimeIndex preserved)
-        - 'normalised_values': DataFrame scaled 0-1 (for dashboard overlay)
-        - 'standardised_values': DataFrame with z-scores (for ML and analysis)
+        - 'features_abs': Original DataFrame (with DateTimeIndex preserved)
+        - 'features_norm': DataFrame scaled 0-1 (for dashboard overlay)
+        - 'features_standardised': DataFrame with z-scores (for ML and analysis)
         
     Note: All returned DataFrames share the same index (dates), ensuring alignment.
     """
@@ -32,13 +32,13 @@ def scale_all_features(feature_data):
         print(f"Warning: Index is {type(clean_data.index)}, expected DatetimeIndex")
     
     return {
-        'absolute_values': clean_data,
-        'normalised_values': pd.DataFrame(
+        'features_abs': clean_data,
+        'features_norm': pd.DataFrame(
             MinMaxScaler().fit_transform(clean_data),
             columns=clean_data.columns,
             index=clean_data.index  # ← EXPLICIT index preservation
         ),
-        'standardised_values': pd.DataFrame(
+        'features_standardised': pd.DataFrame(
             StandardScaler().fit_transform(clean_data),
             columns=clean_data.columns,
             index=clean_data.index  # ← EXPLICIT index preservation
