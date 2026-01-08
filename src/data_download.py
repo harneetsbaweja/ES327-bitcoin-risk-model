@@ -10,10 +10,10 @@ from datetime import datetime
 import os
 
 # ============ CONFIG ============
-CACHE_DIR = 'data_cache'
+CACHE_DIR = '../data_cache'
 CACHE_FILE = os.path.join(CACHE_DIR, 'bitcoin_data.pkl')
 START_DATE = pd.to_datetime('2017-01-01')
-END_DATE = pd.to_datetime('2025-11-05')
+END_DATE = pd.to_datetime('2026-01-01')
 
 os.makedirs(CACHE_DIR, exist_ok=True)
 
