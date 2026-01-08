@@ -20,7 +20,7 @@ os.makedirs(CACHE_DIR, exist_ok=True)
 # ============ DOWNLOAD ============
 if __name__ == '__main__':
     print("Downloading Bitcoin price data.")
-    btc_data = yf.download('BTC-USD', start=START_DATE, end=END_DATE, progress=False)
+    bitcoin_price_history = yf.download('BTC-USD', start=START_DATE, end=END_DATE, progress=False)
 
     print("Downloading Fear and Greed Index.")
     fgi = FearAndGreedIndex()
@@ -33,7 +33,7 @@ if __name__ == '__main__':
 
     # ============ SAVE CACHE ============
     cache_data = {
-        'bitcoin_data': btc_data,
+        'bitcoin_price_history': bitcoin_price_history,
         'fgi_data': fgi_df,
         'start_date': START_DATE,
         'end_date': END_DATE,
