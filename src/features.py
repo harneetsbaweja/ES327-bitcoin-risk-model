@@ -75,50 +75,6 @@ def calculate_all_features(bitcoin_historical_data, fear_greed_index_data):
         bitcoin_data_copy[('Close', 'BTC-USD')] / bitcoin_data_copy[('Close', 'BTC-USD')].shift(1)
     )
     
-    # ===== CYCLE LOW MULTIPLE (Optimized Vectorized Implementation) =====
-    # Ratio of current price to minimum price in halving cycle
-    # Cycle duration = (current_halving - prev_halving), split symmetrically
-    bitcoin_timestamps = bitcoin_data_copy.index
-    
-    # Convert halving dates and calculate cycle durations
-    halving_timestamps = pd.to_datetime(halving_dates).sort_values().values
-    num_halvings = len(halving_timestamps)
-    
-    cycle_durations_days = np.diff(halving_timestamps).astype('timedelta64[D]').astype(int)
-    cycle_durations_days = np.concatenate([[1461], cycle_durations_days])  # First cycle: 4 years default
-    
-    days_before_halving = np.ceil(cycle_durations_days / 2).astype(int)
-    days_after_halving = np.floor(cycle_durations_days / 2).astype(int)
-    
-    cycle_start_dates = halving_timestamps - days_before_halving.astype('timedelta64[D]')
-    cycle_end_dates = halving_timestamps + days_after_halving.astype('timedelta64[D]')
-    
-    # Vectorized cycle membership: broadcast to find which dates belong to which cycles
-    timestamps_2d = bitcoin_timestamps.values[:, np.newaxis]  # Shape: (n_dates, 1)
-    cycle_start_2d = cycle_start_dates[np.newaxis, :]  # Shape: (1, n_cycles)
-    cycle_end_2d = cycle_end_dates[np.newaxis, :]  # Shape: (1, n_cycles)
-    date_in_cycle_mask = (timestamps_2d >= cycle_start_2d) & (timestamps_2d <= cycle_end_2d)
-    
-    # Initialize result
-    cycle_low_multiple_values = np.full(len(bitcoin_close_prices), np.nan)
-    
-    # Calculate cycle low multiple for each cycle
-    for cycle_index in range(num_halvings):
-        dates_in_current_cycle = date_in_cycle_mask[:, cycle_index]
-        
-        if not dates_in_current_cycle.any():
-            continue
-        
-        prices_in_current_cycle = bitcoin_close_prices[dates_in_current_cycle]
-        cycle_minimum_price = np.nanmin(prices_in_current_cycle)
-        
-        cycle_low_multiple_values[dates_in_current_cycle] = (
-            prices_in_current_cycle / cycle_minimum_price
-        )
-    
-    bitcoin_data_copy['Cycle_Low_Multiple'] = cycle_low_multiple_values
-    # ===== END CYCLE LOW MULTIPLE =====
-    
     # Moving averages (trend indicators for different time periods)
     moving_average_windows = [7, 14, 30, 50, 200]  # 1 week to ~7 months
     for num_days in moving_average_windows:
