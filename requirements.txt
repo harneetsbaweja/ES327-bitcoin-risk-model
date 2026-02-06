@@ -9,7 +9,13 @@ plotly
 nbformat
 ipywidgets
 dash
-fear-and-greed
+fear-and-greed-crypto
 pycoingecko
 matplotlib
 nbstripout
+mlflow
+tabulate
+shap
+wheel
+setuptools
+quantreo

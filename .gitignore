@@ -8,6 +8,7 @@
 /pyvenv.cfg
 /.ipynb_checkpoints/
 /etc/
+ES327Py31210/
 
 # Model files
 *.joblib
@@ -37,8 +38,6 @@ __pycache__/
 .DS_Store
 Thumbs.db
 
-# Label Studio files
-/ES327LabelStudio
+# Useless folders
+existing_projects/
 
-# Existing Project Files
-/existing_projects/
