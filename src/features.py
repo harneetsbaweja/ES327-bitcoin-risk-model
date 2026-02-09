@@ -9,6 +9,7 @@ macd_slow_period = 26
 macd_signal_period = 9
 bollinger_bands_period = 20
 bollinger_bands_std_deviations = 2
+ewm_span = 100
 
 halving_dates = [
     '2012-11-28',  # First halving: 50 → 25 BTC
@@ -86,7 +87,7 @@ def calculate_all_features(bitcoin_historical_data, fear_greed_index_data):
     # Volatility measures (how much price fluctuates)
     bitcoin_data_copy['Volatility_7day'] = bitcoin_data_copy['Daily_Return'].rolling(window=7).std()
     bitcoin_data_copy['Volatility_30day'] = bitcoin_data_copy['Daily_Return'].rolling(window=30).std()
-    bitcoin_data_copy['Volatility_EWMA_100day'] = bitcoin_data_copy['Daily_Return'].ewm(span=100).std()
+    bitcoin_data_copy['Volatility_EWMA'] = bitcoin_data_copy['Daily_Return'].ewm(span=ewm_span).std()
     
     # Volume indicators (trading activity level)
     bitcoin_data_copy['Volume_SMA_7day'] = bitcoin_data_copy[('Volume', 'BTC-USD')].rolling(window=7).mean()

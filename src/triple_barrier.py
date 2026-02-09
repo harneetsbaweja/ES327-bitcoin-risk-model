@@ -1,5 +1,5 @@
 """
-Label each day as Oversold (-1), Neutral (0), or Overbought (+1)
+Label each day as Oversold (+1), Neutral (0), or Overbought (-1)
 based on triple barrier method (López de Prado, 2018).
 
 Implementation follows:
@@ -54,12 +54,18 @@ def triple_barrier(price_series, volatility_series, holding_period,
         # Check profit target hit
         profit_hits = future_prices >= profit_target
         profit_hit = profit_hits.any()
-        profit_hit_idx = profit_hits.idxmax() if profit_hit else None
+        if profit_hit:
+            profit_hit_idx = profit_hits.idxmax()
+        else:
+            profit_hit_idx = None
         
         # Check stop loss hit
         loss_hits = future_prices <= stop_loss
         loss_hit = loss_hits.any()
-        loss_hit_idx = loss_hits.idxmax() if loss_hit else None
+        if loss_hit:
+            loss_hit_idx = loss_hits.idxmax()
+        else:
+            loss_hit_idx = None
         
         # Determine which barrier hit FIRST
         if profit_hit and loss_hit:
@@ -68,37 +74,38 @@ def triple_barrier(price_series, volatility_series, holding_period,
             loss_pos = future_prices.index.get_loc(loss_hit_idx)
             
             if profit_pos < loss_pos:
-                label = -1  # Oversold (profit hit first)
+                label = +1  # Oversold (profit hit first)
                 actual_return = (profit_target - entry_price) / entry_price
                 hit_time = profit_hit_idx
             else:
-                label = +1  # Overbought (loss hit first)
+                label = -1  # Overbought (loss hit first)
                 actual_return = (stop_loss - entry_price) / entry_price
                 hit_time = loss_hit_idx
                 
         elif profit_hit:
-            label = -1  # Oversold
+            label = +1  # Oversold
             actual_return = (profit_target - entry_price) / entry_price
             hit_time = profit_hit_idx
             
         elif loss_hit:
-            label = +1  # Overbought
+            label = -1  # Overbought
             actual_return = (stop_loss - entry_price) / entry_price
             hit_time = loss_hit_idx
             
         else:
             # Neither barrier hit - exit at vertical barrier (time limit)
+            label = 0  # Neutral (time limit hit)
             exit_price = future_prices.iloc[-1]  # Price at end of holding period
             actual_return = (exit_price - entry_price) / entry_price
             hit_time = vertical_barrier_date
             
-            # Apply minimum return threshold for neutral classification
-            if abs(actual_return) < min_ret_threshold:
-                label = 0  # Neutral (insufficient movement)
-            elif actual_return > 0:
-                label = -1  # Oversold (small gain)
-            else:
-                label = +1  # Overbought (small loss)
+            # # Apply minimum return threshold for neutral classification
+            # if abs(actual_return) < min_ret_threshold:
+            #     label = 0  # Neutral (insufficient movement)
+            # elif actual_return > 0:
+            #     label = +1  # Oversold (small gain)
+            # else:
+            #     label = -1  # Overbought (small loss)
         
         labels.append(label)
         actual_returns.append(actual_return)
