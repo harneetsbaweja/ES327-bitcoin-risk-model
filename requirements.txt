@@ -19,3 +19,4 @@ shap
 wheel
 setuptools
 quantreo
+quantstats
