@@ -39,3 +39,4 @@ Thumbs.db
 existing_projects/
 Misc/
 .python-version
+mlflow.db
