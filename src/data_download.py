@@ -10,21 +10,19 @@ from datetime import datetime
 import os
 
 # ============ CONFIG ============
-CACHE_DIR = '../data_cache'
-CACHE_FILE = os.path.join(CACHE_DIR, 'bitcoin_data.pkl')
-START_DATE = pd.to_datetime('2017-01-01')
-END_DATE = pd.to_datetime('2026-01-01')
+chache_dir = '../data_cache'
+cache_file_name = os.path.join(chache_dir, 'bitcoin_data.pkl')
+start_date = pd.to_datetime('2017-01-01')
+end_date = pd.to_datetime('2026-01-01')
 
-os.makedirs(CACHE_DIR, exist_ok=True)
+os.makedirs(chache_dir, exist_ok=True)
 
 # ============ DOWNLOAD ============
 if __name__ == '__main__':
-    print("Downloading Bitcoin price data.")
-    bitcoin_price_history = yf.download('BTC-USD', start=START_DATE, end=END_DATE, progress=False)
+    bitcoin_price_history = yf.download('BTC-USD', start=start_date, end=end_date, progress=False)
 
-    print("Downloading Fear and Greed Index.")
     fgi = FearAndGreedIndex()
-    fgi_raw = fgi.get_historical_data(START_DATE)
+    fgi_raw = fgi.get_historical_data(start_date)
     fgi_df = pd.DataFrame(fgi_raw)
     fgi_df['Date'] = pd.to_datetime(fgi_df['timestamp'].astype(int), unit='s')
 
@@ -35,12 +33,11 @@ if __name__ == '__main__':
     cache_data = {
         'bitcoin_price_history': bitcoin_price_history,
         'fgi_data': fgi_df,
-        'start_date': START_DATE,
-        'end_date': END_DATE,
+        'start_date': start_date,
+        'end_date': end_date,
         'cache_date': datetime.now().strftime('%Y-%m-%d %H:%M')
     }
 
-    pd.to_pickle(cache_data, CACHE_FILE)
-    print(f"    Cached to: {CACHE_FILE}")
-    print(f"    Timestamp: {cache_data['cache_date']}")
-    print(f"    Range: {START_DATE.date()} to {END_DATE.date()}")
+    pd.to_pickle(cache_data, cache_file_name)
+    print(f"    Cached to: {cache_file_name}")
+    print(f"    Range: {start_date.date()} to {end_date.date()}")
