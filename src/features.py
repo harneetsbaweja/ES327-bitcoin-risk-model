@@ -10,6 +10,7 @@ macd_signal_period = 9
 bollinger_bands_period = 20
 bollinger_bands_std_deviations = 2
 ewm_span = 100
+include_fgi = False  # Whether to include Fear & Greed Index as a feature
 
 halving_dates = [
     '2012-11-28',  # First halving: 50 → 25 BTC
@@ -57,7 +58,8 @@ def calculate_all_features(bitcoin_historical_data, fear_greed_index_data):
     bitcoin_data_copy['MACD_Signal'] = macd_signal_line
     
     # Fear & Greed Index - market sentiment indicator (0=Extreme Fear, 100=Extreme Greed)
-    bitcoin_data_copy['Fear_and_Greed_Index'] = fear_greed_index_data.set_index('Date')['value']
+    if include_fgi:
+        bitcoin_data_copy['Fear_and_Greed_Index'] = fear_greed_index_data.set_index('Date')['value']
     
     # Bollinger Bands - shows price volatility and potential breakouts
     upper_band, middle_band, lower_band = talib.BBANDS(
