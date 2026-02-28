@@ -20,3 +20,5 @@ wheel
 setuptools
 quantreo
 quantstats
+Boruta
+coinmetrics-api-client
