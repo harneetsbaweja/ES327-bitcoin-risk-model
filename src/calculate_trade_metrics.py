@@ -1,23 +1,22 @@
-import os
 import pandas as pd
 import quantstats as qs
 import numpy as np
 
 def calculate_trade_metrics(y_true, y_pred, actual_returns, set_name="train"):
     """
-    Calculate trading-specific metrics using QuantStats.
-    
+    Calculate trading metrics using QuantStats.
+
     Parameters:
-    - y_true: true labels
-    - y_pred: predicted labels (from predictions_df)
-    - actual_returns: actual 7-day returns
-    - set_name: "train" or "test" for metric naming
-    
+    - y_true:          True labels (pd.Series, DatetimeIndex)
+    - y_pred:          Predicted labels (pd.Series, DatetimeIndex)
+    - actual_returns:  Log returns from triple_barrier (pd.Series, DatetimeIndex)
+    - set_name:        'train' or 'test' for metric naming
+
     Returns:
     - dict of trading metrics
     """
     traded_mask = (y_pred != 0)
-    traded_returns = actual_returns[traded_mask] / 100
+    traded_returns = actual_returns[traded_mask]
     traded_pred = y_pred[traded_mask]
     traded_true = y_true[traded_mask]
     
@@ -26,11 +25,11 @@ def calculate_trade_metrics(y_true, y_pred, actual_returns, set_name="train"):
     avg_win = qs.stats.avg_win(traded_returns)
     avg_loss = abs(qs.stats.avg_loss(traded_returns))
     max_drawdown = qs.stats.max_drawdown(traded_returns)
-    sharpe_ratio = qs.stats.sharpe(traded_returns)
+    sharpe_ratio = qs.stats.sharpe(traded_returns, period = 365)
     expected_value = (win_rate * avg_win) - ((1 - win_rate) * avg_loss)
     
     # Custom metric: Avg Loss When Wrong
-    wrong_predictions = (traded_pred != np.sign(traded_true))
+    wrong_predictions = (np.sign(traded_pred) != np.sign(traded_true)) & (traded_true != 0)
     wrong_returns = traded_returns[wrong_predictions]
     avg_loss_when_wrong = abs(wrong_returns[wrong_returns < 0].mean())
     
