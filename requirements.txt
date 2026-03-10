@@ -22,3 +22,6 @@ quantreo
 quantstats
 Boruta
 coinmetrics-api-client
+optuna
+skfolio
+xgboost
