@@ -23,9 +23,16 @@ def calculate_trade_metrics(y_true, y_pred, actual_returns, prediction_window, s
     profit_factor = qs.stats.profit_factor(long_returns)
     avg_win = qs.stats.avg_win(long_returns)
     avg_loss = abs(qs.stats.avg_loss(long_returns))
-    max_drawdown = qs.stats.max_drawdown(long_returns)
-    sharpe_ratio = qs.stats.sharpe(long_returns, periods = 365/prediction_window)
     expected_value = (win_rate * avg_win) - ((1 - win_rate) * avg_loss)
+    
+    # Series with returns on all days, traded or not.
+    full_index = actual_returns.index
+    daily_long_signal_returns  = pd.Series(0.0, index=full_index)
+    daily_long_signal_returns [long_returns.index] = long_returns.values
+    
+    sharpe_ratio = qs.stats.sharpe(daily_long_signal_returns, periods = 365)
+    sortino_ratio = qs.stats.sortino(daily_long_signal_returns, periods = 365)
+    max_drawdown = qs.stats.max_drawdown(daily_long_signal_returns)
     
     # Custom metric: Avg Loss When Wrong
     bought_but_price_not_rise_mask = (long_true != 1)

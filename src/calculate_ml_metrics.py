@@ -38,6 +38,7 @@ def calculate_ml_metrics(y_true, y_pred, y_pred_proba, set_name="train"):
             ml_metrics[f"{set_name}_roc_auc_ovo"] = roc_auc_score(
                 y_true, proba_array, multi_class='ovo', average='macro'
             )
-        except:
+        except (ValueError, TypeError) as e:
+            print(f"ROC-AUC failed for {set_name}: {e}")
             ml_metrics[f"{set_name}_roc_auc_ovo"] = None
     return ml_metrics
