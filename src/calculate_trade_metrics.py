@@ -2,7 +2,7 @@ import pandas as pd
 import quantstats as qs
 import numpy as np
 
-def calculate_trade_metrics(y_true, y_pred, actual_returns, set_name="train"):
+def calculate_trade_metrics(y_true, y_pred, actual_returns, prediction_window, set_name="train"):
     """
     Calculate trading metrics using QuantStats.
 
@@ -15,23 +15,22 @@ def calculate_trade_metrics(y_true, y_pred, actual_returns, set_name="train"):
     Returns:
     - dict of trading metrics
     """
-    traded_mask = (y_pred != 0)
-    traded_returns = actual_returns[traded_mask]
-    traded_pred = y_pred[traded_mask]
-    traded_true = y_true[traded_mask]
+    top_barrier_pred = (y_pred == 1)
+    long_returns   = actual_returns[top_barrier_pred]  # returns on trades we entered
+    long_true      = y_true[top_barrier_pred]          # actual outcomes of those trades
     
-    win_rate = qs.stats.win_rate(traded_returns)
-    profit_factor = qs.stats.profit_factor(traded_returns)
-    avg_win = qs.stats.avg_win(traded_returns)
-    avg_loss = abs(qs.stats.avg_loss(traded_returns))
-    max_drawdown = qs.stats.max_drawdown(traded_returns)
-    sharpe_ratio = qs.stats.sharpe(traded_returns, period = 365)
+    win_rate = qs.stats.win_rate(long_returns)
+    profit_factor = qs.stats.profit_factor(long_returns)
+    avg_win = qs.stats.avg_win(long_returns)
+    avg_loss = abs(qs.stats.avg_loss(long_returns))
+    max_drawdown = qs.stats.max_drawdown(long_returns)
+    sharpe_ratio = qs.stats.sharpe(long_returns, periods = 365/prediction_window)
     expected_value = (win_rate * avg_win) - ((1 - win_rate) * avg_loss)
     
     # Custom metric: Avg Loss When Wrong
-    wrong_predictions = (np.sign(traded_pred) != np.sign(traded_true)) & (traded_true != 0)
-    wrong_returns = traded_returns[wrong_predictions]
-    avg_loss_when_wrong = abs(wrong_returns[wrong_returns < 0].mean())
+    bought_but_price_not_rise_mask = (long_true != 1)
+    returns_on_wrong_trades = long_returns[bought_but_price_not_rise_mask]
+    avg_loss_when_wrong = abs(returns_on_wrong_trades[returns_on_wrong_trades < 0].mean())
     
     trade_metrics = {
         f"{set_name}_win_rate": win_rate,
