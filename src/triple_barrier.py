@@ -22,13 +22,13 @@ import pandas as pd
 import numpy as np
 
 def triple_barrier(price_series, volatility_series, holding_period, 
-                            profit_mult, stop_mult, min_ret_threshold):
+                            profit_mult, stop_mult, min_ret_threshold, apply_min_ret_threshold = False):
     
     n = len(price_series)
-    labels      = np.full(n, np.nan)
-    returns     = np.full(n, np.nan)
+    labels = np.full(n, np.nan)
+    returns = np.full(n, np.nan)
     exit_prices = np.full(n, np.nan)
-    barrier_hit_times   = np.full(n, np.datetime64('NaT'), dtype='datetime64[ns]')
+    barrier_hit_times = np.full(n, np.datetime64('NaT'), dtype='datetime64[ns]')
     
     for i in range(n - holding_period):
         entry_date = price_series.index[i]
@@ -100,16 +100,17 @@ def triple_barrier(price_series, volatility_series, holding_period,
             exit_price = future_prices.iloc[-1]  # Price at end of holding period
             actual_return = (exit_price - entry_price) / entry_price
             
-            # # Apply minimum return threshold for neutral classification
-            # if abs(actual_return) < min_ret_threshold:
-            #     label = 0  # Neutral (insufficient movement)
-            # elif actual_return > 0:
-            #     label = +1  # Overbought (small gain)
-            # else:
-            #     label = -1  # Oversold (small loss)
+            # Apply minimum return threshold for neutral classification
+            if apply_min_ret_threshold:
+                if abs(actual_return) < min_ret_threshold:
+                    label = 0  # Neutral (insufficient movement)
+                elif actual_return > 0:
+                    label = +1  # Overbought (small gain)
+                else:
+                    label = -1  # Oversold (small loss)
         
-        labels[i]      = label
-        returns[i]     = actual_return
+        labels[i] = label
+        returns[i] = actual_return
         exit_prices[i] = exit_price
         barrier_hit_times[i]   = hit_time
     
