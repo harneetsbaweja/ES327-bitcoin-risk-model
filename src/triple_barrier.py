@@ -1,5 +1,5 @@
 """
-Label each day as Overbought (+1), Neutral (0), or Oversold (-1)
+Label each day as profit-target-hit (+1), Neutral (0), or stop-loss-hit (-1)
 based on triple barrier method.
 
 Implementation follows:
@@ -70,25 +70,25 @@ def triple_barrier(price_series, volatility_series, holding_period,
         if profit_hit and loss_hit:
             # Both hit - check which came first (compare index positions)
             if profit_hit_idx < loss_hit_idx:
-                label = +1  # Overbought (profit hit first)
+                label = +1  # profit-target-hit
                 hit_time = profit_hit_idx
                 exit_price = future_prices.loc[hit_time]
                 actual_return = (exit_price - entry_price) / entry_price
                 
             else:
-                label = -1  # Oversold (loss hit first)
+                label = -1  # stop-loss-hit
                 hit_time = loss_hit_idx
                 exit_price = future_prices.loc[hit_time]
                 actual_return = (exit_price - entry_price) / entry_price
                 
         elif profit_hit:
-            label = +1  # Overbought
+            label = +1  # profit-target-hit
             hit_time = profit_hit_idx
             exit_price = future_prices.loc[hit_time]
             actual_return = (exit_price - entry_price) / entry_price
             
         elif loss_hit:
-            label = -1  # Oversold
+            label = -1  # stop-loss-hit
             hit_time = loss_hit_idx
             exit_price = future_prices.loc[hit_time]
             actual_return = (exit_price - entry_price) / entry_price
@@ -105,9 +105,9 @@ def triple_barrier(price_series, volatility_series, holding_period,
                 if abs(actual_return) < min_ret_threshold:
                     label = 0  # Neutral (insufficient movement)
                 elif actual_return > 0:
-                    label = +1  # Overbought (small gain)
+                    label = +1  # profit-target-hit
                 else:
-                    label = -1  # Oversold (small loss)
+                    label = -1  # stop-loss-hit
         
         labels[i] = label
         returns[i] = actual_return

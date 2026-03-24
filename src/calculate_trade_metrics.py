@@ -2,25 +2,25 @@ import pandas as pd
 import quantstats as qs
 import numpy as np
 
-def calculate_trade_metrics(y_true, y_pred, actual_returns, prediction_window, set_name="train"):
+def calculate_trade_metrics(y_true, y_pred, realised_return, prediction_window, set_name="train"):
     """
     Calculate trading metrics using QuantStats.
 
     Parameters:
     - y_true:          True labels (pd.Series, DatetimeIndex)
     - y_pred:          Predicted labels (pd.Series, DatetimeIndex)
-    - actual_returns:  Log returns from triple_barrier (pd.Series, DatetimeIndex)
+    - realised_return:  Log returns from triple_barrier (pd.Series, DatetimeIndex)
     - set_name:        'train' or 'test' for metric naming
 
     Returns:
     - dict of trading metrics
     """
     top_barrier_pred = (y_pred == 1)
-    long_returns = actual_returns[top_barrier_pred]  # returns on trades we entered
+    long_returns = realised_return[top_barrier_pred]  # returns on trades we entered
     long_true = y_true[top_barrier_pred]          # actual outcomes of those trades
     
     trade_count = long_returns.count()
-    trade_frequency = len(long_returns) / len(actual_returns)
+    trade_frequency = len(long_returns) / len(realised_return)
     win_rate = qs.stats.win_rate(long_returns)
     profit_factor = qs.stats.profit_factor(long_returns)
     avg_win = qs.stats.avg_win(long_returns)
@@ -28,7 +28,7 @@ def calculate_trade_metrics(y_true, y_pred, actual_returns, prediction_window, s
     expected_value = (win_rate * avg_win) - ((1 - win_rate) * avg_loss)
     
     # Series with returns on all days, traded or not.
-    full_index = actual_returns.index
+    full_index = realised_return.index
     daily_long_signal_returns = pd.Series(0.0, index=full_index)
     daily_long_signal_returns [long_returns.index] = long_returns.values
     
@@ -53,7 +53,7 @@ def calculate_trade_metrics(y_true, y_pred, actual_returns, prediction_window, s
         f"{set_name}_cum_return_pct": cumulative_return * 100,
         f"{set_name}_sharpe_ratio": sharpe_ratio,
         f"{set_name}_sortino_ratio": sortino_ratio,
-        f"{set_name}_max_drawdown": max_drawdown,
+        f"{set_name}_max_drawdown_pct": max_drawdown * 100,
         f"{set_name}_calmar_ratio": calmar_ratio,
         f"{set_name}_expected_value": expected_value,
         f"{set_name}_avg_loss_when_wrong_pct": avg_loss_when_wrong * 100
