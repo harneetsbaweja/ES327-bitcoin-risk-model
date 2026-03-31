@@ -25,17 +25,13 @@ For full methodology justification see the dissertation.
 ---
 
 ## Pipeline
-01 · Data Download yfinance OHLCV + CoinMetrics on-chain + Fear & Greed Index
-02 · Feature Engineering TA-Lib indicators → 69-feature candidate set
-03 · Label Parameter Search Optuna TPE · 150 trials · dual objectives (EV + entropy)
-04 · Data Label & Split src/triple_barrier.py · 80/20 chronological split
-05 · Feature Selection Boruta · 100 trials · scikit-learn Random Forest
-06 · Hyperparameter Tuning Optuna TPE · TimeSeriesSplit + 7-day embargo
-07 · Model Training LR · SVM-RBF · RF · XGBoost · baselines → MLflow
-08 · Model Evaluation ML metrics · trade metrics · SHAP · QuantStats tearsheets
-
 Each stage reads from and writes to `data_cache/*.pkl`. All experiments are
 logged to MLflow with params, metrics, and artefacts per run.
+
+<p align="center">
+  <img src="docs/images/Flowchart.drawio.png"
+       width="700" alt="Project Pipeline"/>
+</p>
 
 | Source | Content | Period |
 |---|---|---|
