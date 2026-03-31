@@ -1,12 +1,11 @@
 # ES327 · Bitcoin Risk Prediction via Triple-Barrier Labelling
-
+---
 Supervised classification pipeline that labels daily Bitcoin observations as
 favourable (+1), neutral (0), or adverse (−1) using López de Prado's
 volatility-scaled triple-barrier method. Four classifiers (LR, SVM-RBF, RF,
 XGBoost) are trained and evaluated across two Bayesian-optimised label
 configurations on a 69-feature dataset spanning 2014–2026.
 Noteworthy Result: SVC (Max EV) · Sharpe 2.051 vs. buy-and-hold 1.419 · test set 2022–2026
----
 
 ## Why this approach?
 
