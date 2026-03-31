@@ -55,9 +55,9 @@ Two Optuna runs with different objectives produce two named label sets,
 propagated independently through all downstream stages.
 
 <p align="center">
-  <img src="docs/images/triple_barrier_contour.jpg" width="370"
+  <img src="docs/images/triple_barrier_contour.png" width="370"
        alt="EV contour over profit_mult × stop_mult"/>
-  <img src="docs/images/triple_barrier_contour_entropy.jpg" width="370"
+  <img src="docs/images/triple_barrier_contour_entropy.png" width="370"
        alt="Label entropy contour over profit_mult × stop_mult"/>
 </p>
 <p align="center"><em>Left: EV of the +1 label. Right: Label entropy.
@@ -76,11 +76,11 @@ The two objectives peak in different regions — the core design tension.</em></
 ## Feature Selection
 
 <p align="center">
-  <img src="docs/images/boruta_importance_history_max_EV_cropped-2.jpg"
+  <img src="docs/images/boruta_importance_history_max_EV_cropped.png"
        width="700" alt="Boruta importances — Max EV"/>
 </p>
 <p align="center">
-  <img src="docs/images/boruta_importance_history_bal_ent_cropped-13.jpg"
+  <img src="docs/images/boruta_importance_history_bal_ent_cropped.png"
        width="700" alt="Boruta importances — Balanced Entropy"/>
 </p>
 <p align="center"><em>Boruta importances across 100 trials.
@@ -107,7 +107,7 @@ under Max EV produced non-degenerate outputs.
 ### SVC · Max EV
 
 <p align="center">
-  <img src="docs/images/confusion_max_ev_f1_svc-9.jpg" width="420"
+  <img src="docs/images/confusion_max_ev_f1_svc.png" width="420"
        alt="SVC Max EV confusion matrix"/>
 </p>
 
@@ -130,7 +130,7 @@ trades infrequently but avoids compounding losses on ambiguous days.
 ### XGBoost · Max EV
 
 <p align="center">
-  <img src="docs/images/confusion_max_ev_f1_xgboost-10.jpg" width="420"
+  <img src="docs/images/confusion_max_ev_f1_xgboost.png" width="420"
        alt="XGBoost Max EV confusion matrix"/>
 </p>
 
